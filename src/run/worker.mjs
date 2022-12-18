@@ -11,9 +11,9 @@ export async function runTestFile(testFile) {
 
   try {
     // Expose to eval and our running test cases will access `expect` function
-    const expect = (received) => {
+    const expect = received => {
       return {
-        toBe: (expected) => {
+        toBe: expected => {
           if (received !== expected) {
             throw new Error(`Expected ${expected} but received ${received}`);
           }
@@ -34,8 +34,5 @@ export async function runTestFile(testFile) {
 
 // Read the data from parent
 const { testFile } = workerData;
-
-console.log('worker thread, running testFile: ', testFile);
 const result = await runTestFile(testFile);
-console.log('worker thread, test result = ', result);
 parentPort.postMessage({ result });

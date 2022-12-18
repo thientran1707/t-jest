@@ -17,5 +17,5 @@ export default async function runTest({
   } = await import(configPath).then(module => module.default);
 
   const testFiles = searchTestFiles({ testMatch, testPathIgnorePatterns });
-  await runTestFiles(testFiles);
+  await runTestFiles(testFiles, rootDir);
 }

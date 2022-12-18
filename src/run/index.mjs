@@ -1,11 +1,12 @@
 import { Worker } from 'worker_threads';
-import path from 'path';
 import { fileURLToPath } from 'url';
+import path from 'path';
+import chalk from 'chalk';
 
 const filename = fileURLToPath(import.meta.url);
 const { dir: currentFilePath } = path.parse(filename);
 
-export async function runTestFiles(testFiles) {
+export async function runTestFiles(testFiles, rootDir) {
   // Spawn the new worker for each testFile
   // Note that this is not very efficient, since creating worker is costly
   // It will be more efficient to use thread pool
@@ -20,6 +21,17 @@ export async function runTestFiles(testFiles) {
             reject(new Error(`Worker stopped with exit code ${code}`));
           }
         });
+      })
+      .then(({ result }) => {
+        const { success, errorMessage } = result;
+        const status = success ? chalk.green.inverse.bold(' PASS ' ) : chalk.red.inverse.bold(' FAIL ');
+        console.log(`${status} ${chalk.dim(path.relative(rootDir, testFile))}`);
+        if (!success) {
+          console.log(`${errorMessage}`);
+        }
+      })
+      .catch(error => {
+        console.log('Error when running test: ', error.message);
       });
     })
   );
