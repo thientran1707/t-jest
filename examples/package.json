@@ -1,0 +1,9 @@
+{
+  "name": "t-jest-examples",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "./node_modules/t-jest/.bin/index.mjs --config=./t-jest.config.js"
+  }
+}
