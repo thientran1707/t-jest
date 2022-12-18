@@ -1,6 +1,9 @@
 import { workerData, parentPort } from 'worker_threads';
 import fs from 'fs';
 
+// Assertions
+import { expect } from '../assertion/index.mjs';
+
 export async function runTestFile(testFile) {
   const code = await fs.promises.readFile(testFile, 'utf8');
 
@@ -9,24 +12,31 @@ export async function runTestFile(testFile) {
     errorMessage: null,
   };
 
+  let testName;
   try {
-    // Expose to eval and our running test cases will access `expect` function
-    const expect = received => {
-      return {
-        toBe: expected => {
-          if (received !== expected) {
-            throw new Error(`Expected ${expected} but received ${received}`);
-          }
+    const describeFns = [];
+    let currentDescribeFn;
 
-          return true;
-        }
+    const describe = (name, fn) => describeFns.push([name, fn]);
+    const it = (name, fn) => currentDescribeFn.push([name, fn]);
+
+    eval(code);
+
+    for (const [name, fn] of describeFns) {
+      currentDescribeFn = [];
+      testName = name;
+      fn();
+
+      for (const [itName, itFn] of currentDescribeFn) {
+        testName += ` ${itName}`;
+        itFn();
       }
     }
 
-    eval(code);
+    // Update success to be true after all are executed
     testResult.success = true;
   } catch (error) {
-    testResult.errorMessage = error.message;
+    testResult.errorMessage = `${testName}: ${error.message}`;
   }
 
   return testResult;
