@@ -1,6 +1,6 @@
 import { workerData, parentPort } from 'worker_threads';
 import fs from 'fs';
-import vm from 'vm';
+import vm from 'node:vm';
 import { TestEnvironment } from 'jest-environment-node';
 
 // Assertions
