@@ -14,6 +14,7 @@
   "dependencies": {
     "chalk": "^5.2.0",
     "glob-all": "^3.3.1",
+    "vm": "^0.1.0",
     "yargs": "^17.6.2"
   }
 }
