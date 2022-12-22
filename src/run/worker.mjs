@@ -18,7 +18,6 @@ export async function runTestFile(testFile) {
   };
 
   let testName;
-  let environment;
   try {
     const describeFns = [];
     let currentDescribeFn;
@@ -26,10 +25,21 @@ export async function runTestFile(testFile) {
     const describe = (name, fn) => describeFns.push([name, fn]);
     const it = (name, fn) => currentDescribeFn.push([name, fn]);
 
+    // create NodeEnvironment and run it with VMContext to isolate the running of each test case
+    const environment = new TestEnvironment({
+      projectConfig: {
+        testEnvironmentOptions: { describe, it, expect }
+      },
+    });
+
+    const stack = [];
+
     const customRequire = fileName => {
-      const dirname = path.dirname(testFile);
-      const filePath = path.join(dirname, fileName);
+      const currentDir = stack[stack.length - 1]; // stack.peek()
+      const filePath = path.join(currentDir, fileName);
       const code = fs.readFileSync(filePath, 'utf8');
+
+      stack.push(path.dirname(filePath));
 
       // Output
       /**
@@ -48,22 +58,20 @@ export async function runTestFile(testFile) {
        */
 
       // Create module factory
-      const moduleFactory = vm.runInContext(`(function(module) {${code}})`, environment.getVmContext());
+      const moduleFactory = vm.runInContext(`(function(module, require) {${code}})`, environment.getVmContext());
 
       const module = { exports: {} };
 
       // Run the code
-      moduleFactory(module);
+      moduleFactory(module, customRequire);
+
+      stack.pop();
       return module.exports;
     };
 
-    // create NodeEnvironment and run it with VMContext to isolate the running of each test case
-    environment = new TestEnvironment({
-      projectConfig: {
-        testEnvironmentOptions: { describe, it, expect, require: customRequire }
-      },
-    });
-    vm.runInContext(code, environment.getVmContext());
+    // customRequire will run the code
+    stack.push(path.dirname(testFile));
+    customRequire(path.basename(testFile));
 
     for (const [name, fn] of describeFns) {
       currentDescribeFn = [];
