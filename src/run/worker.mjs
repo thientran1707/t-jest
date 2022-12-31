@@ -4,14 +4,15 @@ import path from 'path';
 import vm from 'node:vm';
 import { TestEnvironment } from 'jest-environment-node';
 
+// Code transformation
+import { transformSync } from '@babel/core';
+
 // Assertions
 import { expect } from '../assertion/index.mjs';
 
 // https://github.com/facebook/jest/issues/10039
 // Since we are using eval, each test case is not isolated
 export async function runTestFile(testFile) {
-  const code = await fs.promises.readFile(testFile, 'utf8');
-
   const testResult = {
     success: false,
     errorMessage: null,
@@ -37,7 +38,12 @@ export async function runTestFile(testFile) {
     const customRequire = fileName => {
       const currentDir = stack[stack.length - 1]; // stack.peek()
       const filePath = path.join(currentDir, fileName);
-      const code = fs.readFileSync(filePath, 'utf8');
+      const rawCode = fs.readFileSync(filePath, 'utf8');
+
+      // Transform code to CommonJS with Babel
+      const { code } = transformSync(rawCode, {
+        plugins: ['@babel/plugin-transform-modules-commonjs']
+      });
 
       stack.push(path.dirname(filePath));
 
@@ -58,12 +64,12 @@ export async function runTestFile(testFile) {
        */
 
       // Create module factory
-      const moduleFactory = vm.runInContext(`(function(module, require) {${code}})`, environment.getVmContext());
+      const moduleFactory = vm.runInContext(`(function(module, exports, require) {${code}})`, environment.getVmContext());
 
       const module = { exports: {} };
 
       // Run the code
-      moduleFactory(module, customRequire);
+      moduleFactory(module, module.exports, customRequire);
 
       stack.pop();
       return module.exports;
