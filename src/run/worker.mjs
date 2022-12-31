@@ -55,9 +55,9 @@ export async function runTestFile(testFile) {
        Will be equivalent to
        const test = () => {
          const module = { exports: {} };
-         (function(module) {
+         (function(module, exports, require) {
            // file.js code
-         })(module)
+         })(module, module.exports, customRequrie)
 
          return module.exports
        })
