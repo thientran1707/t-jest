@@ -1,4 +1,4 @@
-import { add } from '../src/add.es6.js';
+import { add } from '../src/add.es6';
 
 describe('es6 test', () => {
   it('test add function', () => {

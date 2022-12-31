@@ -6,7 +6,11 @@ export const loadFile = filePath => {
   const { ext } = path.parse(filePath);
 
   if (ext) {
-    return fs.readFileSync(filePath, 'utf8');
+    try {
+      return fs.readFileSync(filePath, 'utf8');
+    } catch (error) {
+      // ignore error
+    }
   }
 
   // try to load the file with extensions
