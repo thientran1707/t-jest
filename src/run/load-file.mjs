@@ -5,6 +5,7 @@ import { DEFAULT_FILE_EXTENSIONS } from './constants.mjs';
 export const loadFile = filePath => {
   const { ext } = path.parse(filePath);
 
+  // if there is a file extension, we will try to load it first
   if (ext) {
     try {
       return fs.readFileSync(filePath, 'utf8');

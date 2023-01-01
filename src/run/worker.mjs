@@ -1,7 +1,13 @@
+// Built-in moduldes
 import { workerData, parentPort } from 'worker_threads';
 import path from 'path';
-import vm from 'node:vm';
+import vm from 'vm';
+
+// JS Environment
+// TODO add jsdom env for testing browser code
 import { TestEnvironment } from 'jest-environment-node';
+
+// Utils
 import { loadFile } from './load-file.mjs';
 
 // Code transformation
