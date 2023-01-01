@@ -34,3 +34,8 @@ Implement the Node resolution
 ### Milestone 7
 
 Support for ES6 syntax and babel transform
+
+## References
+
+- https://cpojer.net/posts/building-a-javascript-testing-framework
+- https://github.com/facebook/jest
