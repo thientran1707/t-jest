@@ -8,7 +8,7 @@ import vm from 'vm';
 import { TestEnvironment } from 'jest-environment-node';
 
 // Utils
-import { loadFile } from './load-file.mjs';
+import { loadFile } from '../file/index.mjs';
 
 // Code transformation
 import { transformSync } from '@babel/core';
