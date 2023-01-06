@@ -1,7 +1,8 @@
 ## A simple JS testing framework
 
 A simple implementation of JS testing framework, mostly inspired from the Jest framework
-The purpose of creating this mini-testing framework is for educational purpose and self-exploration only. So we focus on some simple use cases only
+
+The purpose of creating this mini-testing framework is for educational purpose and self-exploration, so we focus on some simple use cases only
 
 ## Content
 
