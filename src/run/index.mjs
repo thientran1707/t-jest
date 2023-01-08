@@ -1,6 +1,6 @@
 import { Worker } from 'worker_threads';
-import os from 'os';
 import { fileURLToPath } from 'url';
+import os from 'os';
 import path from 'path';
 import chalk from 'chalk';
 
