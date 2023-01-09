@@ -4,6 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/t-jest/.bin/index.mjs --config=./t-jest.config.js"
+    "test": "./node_modules/t-jest/.bin/index.mjs"
   }
 }
