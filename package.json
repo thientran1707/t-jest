@@ -10,5 +10,8 @@
     "name": "Thien Tran",
     "email": "thientran1707@gmail.com"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^17.6.2"
+  }
 }

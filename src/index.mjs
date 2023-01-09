@@ -1,3 +1,3 @@
-export default function runTests() {
-  console.log('runTests');
+export default function runTests({ configPath }) {
+  console.log('runTests, configPath = ', configPath);
 }
