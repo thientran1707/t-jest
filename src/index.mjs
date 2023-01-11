@@ -1,7 +1,8 @@
 // Utils
 import { searchTestFiles } from './search/index.mjs';
+import { runTestFiles } from './run/index.mjs';
 
-// Native module
+// Native modules
 import path from 'path';
 
 export default async function runTests({ configPath }) {
@@ -13,5 +14,5 @@ export default async function runTests({ configPath }) {
   } = await import(configPath).then(module => module.default);
 
   const testFiles = searchTestFiles({ testMatch, testPathIgnorePatterns });
-  console.log('testFiles = ', testFiles);
+  await runTestFiles(testFiles, rootDir);
 }
