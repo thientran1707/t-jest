@@ -3,10 +3,21 @@ import { workerData, parentPort } from 'worker_threads';
 import fs from 'fs';
 
 export async function runTestFile(testFile) {
+  const testResult = {
+    success: false,
+    errorMessage:null,
+  };
+
   const code = await fs.promises.readFile(testFile, 'utf-8');
 
-  console.log('code = ', code);
-  return code;
+  try {
+    eval(code);
+    testResult.success = true;
+  } catch (error) {
+    testResult.errorMessage = error.message;
+  }
+
+  return testResult;
 }
 
 // Read the data from parent

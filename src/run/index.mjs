@@ -23,5 +23,8 @@ export async function runTestFiles(testFiles, rootDir) {
     then(({ result}) => {
       console.log('result = ', result);
     })
+    .catch(error => {
+      console.log('Error when running test: ', error.message);
+    })
   }));
 }
