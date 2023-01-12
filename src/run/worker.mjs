@@ -2,6 +2,9 @@
 import { workerData, parentPort } from 'worker_threads';
 import fs from 'fs';
 
+// Assertions
+import { expect } from '../assertion/index.mjs';
+
 export async function runTestFile(testFile) {
   const testResult = {
     success: false,
