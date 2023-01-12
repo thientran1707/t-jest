@@ -26,11 +26,11 @@ export async function runTestFile(testFile) {
     for (const [name, fn] of describeFns) {
       currentDescribeFn = [];
       testName = name;
-      fn();
+      await fn();
 
       for (const [itName, itFn] of currentDescribeFn) {
         testName += ` ${itName}`;
-        itFn();
+        await itFn();
       }
     }
 
