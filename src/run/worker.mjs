@@ -7,6 +7,9 @@ import vm from 'vm';
 // JS Environment
 import { TestEnvironment } from 'jest-environment-node';
 
+// Code transformation
+import { transformSync } from '@babel/core';
+
 // Assertions
 import { expect } from '../assertion/index.mjs';
 
@@ -15,8 +18,6 @@ export async function runTestFile(testFile) {
     success: false,
     errorMessage:null,
   };
-
-  const code = await fs.promises.readFile(testFile, 'utf-8');
 
   let testName;
   try {
@@ -53,7 +54,11 @@ export async function runTestFile(testFile) {
       const currentDir = stack[stack.length - 1]; // stack.peek()
       const filePath = path.join(currentDir, fileName);
 
-      const code = fs.readFileSync(filePath, 'utf-8');
+      const rawCode = fs.readFileSync(filePath, 'utf-8');
+      // Transform code to CommonJS with Babel
+      const { code } = transformSync(rawCode, {
+        plugins: ['@babel/plugin-transform-modules-commonjs']
+      });
 
       stack.push(path.dirname(filePath));
 
