@@ -1,10 +1,5 @@
-function add(number1, number2) {
-  return number1 + number2;
-}
-
-function multiply(number1, number2) {
-  return number1 * number2;
-}
+const { add } = require('./src/add.js');
+const { multiply } = require('./src/multiply.js');
 
 module.exports = {
   add,
