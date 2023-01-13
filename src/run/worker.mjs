@@ -47,8 +47,16 @@ export async function runTestFile(testFile) {
        return module.exports;
      })
      */
+    const stack = [];
+
     const customRequire = fileName => {
-      const code = fs.readFileSync(path.join(path.dirname(testFile), fileName), 'utf-8');
+      const currentDir = stack[stack.length - 1]; // stack.peek()
+      const filePath = path.join(currentDir, fileName);
+
+      const code = fs.readFileSync(filePath, 'utf-8');
+
+      stack.push(path.dirname(filePath));
+
       // Create module factory
       const moduleFactory = vm.runInContext(`(function(module, exports, require) {${code}})`, environment.getVmContext());
 
@@ -57,9 +65,12 @@ export async function runTestFile(testFile) {
       // Run the code
       moduleFactory(module, module.exports, customRequire);
 
+      stack.pop();
       return module.exports;
     };
 
+    // customRequire will run the code
+    stack.push(path.dirname(testFile));
     customRequire(path.basename(testFile));
 
     for (const [name, fn] of describeFns) {
