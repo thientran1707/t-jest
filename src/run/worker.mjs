@@ -1,6 +1,7 @@
 // Built-in node_modules
 import { workerData, parentPort } from 'worker_threads';
 import fs from 'fs';
+import path from 'path';
 import vm from 'vm';
 
 // JS Environment
@@ -31,7 +32,35 @@ export async function runTestFile(testFile) {
         testEnvironmentOptions: { describe, it, expect },
       },
     });
-    vm.runInContext(code, environment.getVmContext());
+
+    /**
+     *
+     Statement: const test = require('./file.js');
+     Will be equivalent to
+     const test = () => {
+       const module = { exports: {} };
+
+       (function(module, exports, require) {
+         // file.js code content
+       })(module, module.exports, customRequire);
+
+       return module.exports;
+     })
+     */
+    const customRequire = fileName => {
+      const code = fs.readFileSync(path.join(path.dirname(testFile), fileName), 'utf-8');
+      // Create module factory
+      const moduleFactory = vm.runInContext(`(function(module, exports, require) {${code}})`, environment.getVmContext());
+
+      const module = { exports: {} };
+
+      // Run the code
+      moduleFactory(module, module.exports, customRequire);
+
+      return module.exports;
+    };
+
+    customRequire(path.basename(testFile));
 
     for (const [name, fn] of describeFns) {
       currentDescribeFn = [];

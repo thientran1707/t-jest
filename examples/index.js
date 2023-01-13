@@ -8,5 +8,5 @@ function multiply(number1, number2) {
 
 module.exports = {
   add,
-  multiple,
+  multiply,
 };
