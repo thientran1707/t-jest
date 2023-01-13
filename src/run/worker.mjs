@@ -1,6 +1,7 @@
 // Built-in node_modules
 import { workerData, parentPort } from 'worker_threads';
 import fs from 'fs';
+import vm from 'vm';
 
 // Assertions
 import { expect } from '../assertion/index.mjs';
@@ -21,7 +22,9 @@ export async function runTestFile(testFile) {
     const describe = (name, fn) => describeFns.push([name, fn]);
     const it = (name, fn) => currentDescribeFn.push([name, fn]);
 
-    eval(code);
+    const context = { describe, it, expect };
+    vm.createContext(context);
+    vm.runInContext(code, context);
 
     for (const [name, fn] of describeFns) {
       currentDescribeFn = [];
