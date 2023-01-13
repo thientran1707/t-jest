@@ -3,6 +3,9 @@ import { workerData, parentPort } from 'worker_threads';
 import fs from 'fs';
 import vm from 'vm';
 
+// JS Environment
+import { TestEnvironment } from 'jest-environment-node';
+
 // Assertions
 import { expect } from '../assertion/index.mjs';
 
@@ -22,9 +25,13 @@ export async function runTestFile(testFile) {
     const describe = (name, fn) => describeFns.push([name, fn]);
     const it = (name, fn) => currentDescribeFn.push([name, fn]);
 
-    const context = { describe, it, expect };
-    vm.createContext(context);
-    vm.runInContext(code, context);
+    // With this
+    const environment = new TestEnvironment({
+      projectConfig: {
+        testEnvironmentOptions: { describe, it, expect },
+      },
+    });
+    vm.runInContext(code, environment.getVmContext());
 
     for (const [name, fn] of describeFns) {
       currentDescribeFn = [];
