@@ -19,6 +19,7 @@ export async function runTestFiles(testFiles, rootDir) {
   // max number of worker creates should be equal to cpuCount - 1
   const workerPoolSize = cpuCount - 1;
 
+  // TODO implement thread pool https://nodejs.org/api/async_context.html#using-asyncresource-for-a-worker-thread-pool
   for (let i = 0; i < testFiles.length; i = i + workerPoolSize) {
     console.log(chalk.green.bold(`Running test batch ${Math.floor(i / workerPoolSize)}`));
     await Promise.all(
