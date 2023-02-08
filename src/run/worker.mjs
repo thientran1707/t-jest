@@ -40,10 +40,18 @@ export async function runTestFile(testFile) {
     });
 
     const stack = [];
+    const moduleCache = {};
 
     const customRequire = fileName => {
       const currentDir = stack[stack.length - 1]; // stack.peek()
       const filePath = path.join(currentDir, fileName);
+
+      // this will make sure the module is executated only once
+      // != will catch both undefined and null
+      if (moduleCache[filePath] != null) {
+        return moduleCache[filePath];
+      }
+
       const rawCode = loadFile(filePath);
 
       // Transform code to CommonJS with Babel
@@ -78,6 +86,8 @@ export async function runTestFile(testFile) {
       moduleFactory(module, module.exports, customRequire);
 
       stack.pop();
+
+      moduleCache[filePath] = module.exports;
       return module.exports;
     };
 
