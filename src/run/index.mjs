@@ -1,13 +1,15 @@
 import { Worker } from 'worker_threads';
+import { WorkerPool } from '../thread-pool/index.mjs';
 import { fileURLToPath } from 'url';
 import os from 'os';
 import path from 'path';
 import chalk from 'chalk';
 
-const cpuCount = os.cpus().length;
-
 const filename = fileURLToPath(import.meta.url);
 const { dir: currentFilePath } = path.parse(filename);
+
+const cpuCount = os.cpus().length;
+const workerPool = new WorkerPool(cpuCount - 1, path.join(currentFilePath, 'worker.mjs'));
 
 export async function runTestFiles(testFiles, rootDir) {
   // Spawn the new worker for each testFile
@@ -15,26 +17,15 @@ export async function runTestFiles(testFiles, rootDir) {
   // It will be more efficient to use thread pool
   let hasFailedTestCase = false;
 
-  // run the tasks in batch
-  // max number of worker creates should be equal to cpuCount - 1
-  const workerPoolSize = cpuCount - 1;
+  await Promise.all(
+    testFiles.map(async testFile => {
+      return new Promise((resolve, reject) => {
+        workerPool.runTask({ testFile }, (err, result) => {
+          if (err) {
+            console.log('Error when running test: ', err.message);
+            reject();
+          }
 
-  // TODO implement thread pool https://nodejs.org/api/async_context.html#using-asyncresource-for-a-worker-thread-pool
-  for (let i = 0; i < testFiles.length; i = i + workerPoolSize) {
-    console.log(chalk.green.bold(`Running test batch ${Math.floor(i / workerPoolSize)}`));
-    await Promise.all(
-      testFiles.slice(i, i + workerPoolSize).map(async testFile => {
-        return new Promise((resolve, reject) => {
-          const worker = new Worker(path.join(currentFilePath, './worker.mjs'), { workerData: { testFile } });
-          worker.on('message', resolve);
-          worker.on('error', reject);
-          worker.on('exit', code => {
-            if (code !== 0) {
-              reject(new Error(`Worker stopped with exit code ${code}`));
-            }
-          });
-        })
-        .then(({ result }) => {
           const { success, errorMessage } = result;
           const status = success ? chalk.green.inverse.bold(' PASS ' ) : chalk.red.inverse.bold(' FAIL ');
           console.log(`${status} ${chalk.dim(path.relative(rootDir, testFile))}`);
@@ -42,13 +33,15 @@ export async function runTestFiles(testFiles, rootDir) {
             hasFailedTestCase = true;
             console.log(`${errorMessage}`);
           }
-        })
-        .catch(error => {
-          console.log('Error when running test: ', error.message);
+
+          resolve();
         });
-      })
-    );
-  }
+      });
+    })
+  )
+
+  // close workerPool
+  workerPool.close();
 
   if (hasFailedTestCase) {
     console.log(chalk.red.bold('Test run failed, please fix the failing tests'));

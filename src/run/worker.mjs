@@ -1,5 +1,5 @@
 // Built-in moduldes
-import { workerData, parentPort } from 'worker_threads';
+import { workerData, parentPort, threadId } from 'worker_threads';
 import path from 'path';
 import vm from 'vm';
 
@@ -115,7 +115,9 @@ export async function runTestFile(testFile) {
   return testResult;
 }
 
-// Read the data from parent
-const { testFile } = workerData;
-const result = await runTestFile(testFile);
-parentPort.postMessage({ result });
+parentPort.on('message', async task => {
+  const { testFile } = task;
+  console.log(`Running task on thread: ${threadId}`);
+  const result = await runTestFile(testFile);
+  parentPort.postMessage(result);
+});
