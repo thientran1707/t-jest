@@ -9,7 +9,10 @@ const filename = fileURLToPath(import.meta.url);
 const { dir: currentFilePath } = path.parse(filename);
 
 const cpuCount = os.cpus().length;
-const workerPool = new WorkerPool(cpuCount - 1, path.join(currentFilePath, 'worker.mjs'));
+const workerPool = new WorkerPool(
+  cpuCount - 1,
+  path.join(currentFilePath, 'worker.mjs')
+);
 
 export async function runTestFiles(testFiles, rootDir) {
   // Spawn the new worker for each testFile
@@ -27,8 +30,12 @@ export async function runTestFiles(testFiles, rootDir) {
           }
 
           const { success, errorMessage } = result;
-          const status = success ? chalk.green.inverse.bold(' PASS ' ) : chalk.red.inverse.bold(' FAIL ');
-          console.log(`${status} ${chalk.dim(path.relative(rootDir, testFile))}`);
+          const status = success
+            ? chalk.green.inverse.bold(' PASS ')
+            : chalk.red.inverse.bold(' FAIL ');
+          console.log(
+            `${status} ${chalk.dim(path.relative(rootDir, testFile))}`
+          );
           if (!success) {
             hasFailedTestCase = true;
             console.log(`${errorMessage}`);
@@ -38,13 +45,15 @@ export async function runTestFiles(testFiles, rootDir) {
         });
       });
     })
-  )
+  );
 
   // close workerPool
   workerPool.close();
 
   if (hasFailedTestCase) {
-    console.log(chalk.red.bold('Test run failed, please fix the failing tests'));
+    console.log(
+      chalk.red.bold('Test run failed, please fix the failing tests')
+    );
     process.exitCode = 1;
   }
 }

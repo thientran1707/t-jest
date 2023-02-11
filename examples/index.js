@@ -3,5 +3,5 @@ const { multiply } = require('./src/multiply');
 
 module.exports = {
   add,
-  multiply
+  multiply,
 };

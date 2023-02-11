@@ -10,6 +10,10 @@
     "name": "Thien Tran",
     "email": "thientran1707@gmail.com"
   },
+  "scripts": {
+    "prettier": "prettier --config ./.prettierrc.json --write .",
+    "prepare": "husky install"
+  },
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.20.12",
@@ -18,5 +22,14 @@
     "glob-all": "^3.3.1",
     "jest-environment-node": "^29.3.1",
     "yargs": "^17.6.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.1",
+    "prettier": "^2.8.4"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }

@@ -17,15 +17,18 @@ export const readFileWithCache = filePath => {
   fileCache[filePath] = content;
 
   return content;
-}
+};
 
-export const loadFile = (filePath, fileExtentions = DEFAULT_FILE_EXTENSIONS) => {
+export const loadFile = (
+  filePath,
+  fileExtentions = DEFAULT_FILE_EXTENSIONS
+) => {
   const { ext } = path.parse(filePath);
 
   // if there is a file extension, we will try to load it first
   if (ext) {
     try {
-      return readFileWithCache(filePath)
+      return readFileWithCache(filePath);
     } catch (error) {
       // ignore error
     }
@@ -39,4 +42,4 @@ export const loadFile = (filePath, fileExtentions = DEFAULT_FILE_EXTENSIONS) => 
       // ignore error
     }
   }
-}
+};

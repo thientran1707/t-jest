@@ -35,7 +35,7 @@ export async function runTestFile(testFile) {
     // create NodeEnvironment and run it with VMContext to isolate the running of each test case
     const environment = new TestEnvironment({
       projectConfig: {
-        testEnvironmentOptions: { describe, it, expect }
+        testEnvironmentOptions: { describe, it, expect },
       },
     });
 
@@ -56,7 +56,7 @@ export async function runTestFile(testFile) {
 
       // Transform code to CommonJS with Babel
       const { code } = transformSync(rawCode, {
-        plugins: ['@babel/plugin-transform-modules-commonjs']
+        plugins: ['@babel/plugin-transform-modules-commonjs'],
       });
 
       stack.push(path.dirname(filePath));
@@ -78,7 +78,10 @@ export async function runTestFile(testFile) {
        */
 
       // Create module factory
-      const moduleFactory = vm.runInContext(`(function(module, exports, require) {${code}})`, environment.getVmContext());
+      const moduleFactory = vm.runInContext(
+        `(function(module, exports, require) {${code}})`,
+        environment.getVmContext()
+      );
 
       const module = { exports: {} };
 

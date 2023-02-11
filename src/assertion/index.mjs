@@ -6,6 +6,6 @@ export const expect = received => {
       }
 
       return true;
-    }
-  }
-}
+    },
+  };
+};
