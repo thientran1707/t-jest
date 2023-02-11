@@ -1,4 +1,3 @@
-import { Worker } from 'worker_threads';
 import { WorkerPool } from '../thread-pool/index.mjs';
 import { fileURLToPath } from 'url';
 import os from 'os';

@@ -1,5 +1,5 @@
 // Built-in moduldes
-import { workerData, parentPort, threadId } from 'worker_threads';
+import { parentPort, threadId } from 'worker_threads';
 import path from 'path';
 import vm from 'vm';
 

@@ -11,6 +11,7 @@
     "email": "thientran1707@gmail.com"
   },
   "scripts": {
+    "eslint": "eslint src/ --ext .js,.mjs",
     "prettier": "prettier --config ./.prettierrc.json --write .",
     "prepare": "husky install"
   },
