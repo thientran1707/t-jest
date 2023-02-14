@@ -14,9 +14,6 @@ const workerPool = new WorkerPool(
 );
 
 export async function runTestFiles(testFiles, rootDir) {
-  // Spawn the new worker for each testFile
-  // Note that this is not very efficient, since creating worker is costly
-  // It will be more efficient to use thread pool
   let hasFailedTestCase = false;
 
   await Promise.all(

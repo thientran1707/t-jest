@@ -72,7 +72,7 @@ export class WorkerPool extends EventEmitter {
 
   runTask(task, callback) {
     if (this.freeWorkers.length === 0) {
-      // no free threads, wait unitl there is a free worker
+      // no free threads, wait until there is a free worker
       this.once(kWorkerFreedEvent, () => this.runTask(task, callback));
       return;
     }
