@@ -21,16 +21,19 @@
     "@babel/plugin-transform-modules-commonjs": "^7.20.11",
     "chalk": "^5.2.0",
     "glob-all": "^3.3.1",
-    "jest-environment-node": "^29.3.1",
+    "jest-environment-node": "^29.4.2",
     "yargs": "^17.6.2"
   },
   "devDependencies": {
     "eslint": "^8.34.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.1.1",
+    "lint-staged": "^13.1.2",
     "prettier": "^2.8.4"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "engines": {
+    "node": ">=14"
   }
 }
