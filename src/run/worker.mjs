@@ -2,6 +2,7 @@
 import { parentPort, threadId } from 'worker_threads';
 import path from 'path';
 import vm from 'vm';
+import chalk from 'chalk';
 
 // JS Environment
 // TODO add jsdom env for testing browser code
@@ -120,7 +121,7 @@ export async function runTestFile(testFile) {
 
 parentPort.on('message', async task => {
   const { testFile } = task;
-  console.log(`Running task on thread: ${threadId}`);
+  console.log(chalk.blue(`Running task on thread: ${threadId}`));
   const result = await runTestFile(testFile);
   parentPort.postMessage(result);
 });
