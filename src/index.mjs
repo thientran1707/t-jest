@@ -12,6 +12,9 @@ export default async function runTest({ configPath }) {
     module => module.default
   );
 
-  const testFiles = searchTestFiles({ testMatch, testPathIgnorePatterns });
+  const testFiles = await searchTestFiles({
+    testMatch,
+    testPathIgnorePatterns,
+  });
   await runTestFiles(testFiles, rootDir);
 }

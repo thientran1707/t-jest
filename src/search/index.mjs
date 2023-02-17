@@ -1,4 +1,4 @@
-import glob from 'glob-all';
+import fg from 'fast-glob';
 
 // Constatns
 import {
@@ -15,7 +15,7 @@ export function searchTestFiles({
   testMatch = DEFAULT_TEST_MATCH,
   testPathIgnorePatterns = DEFAULT_TEST_PATH_IGNORE_PATTERNS,
 }) {
-  return glob.sync(testMatch, {
+  return fg(testMatch, {
     onlyFiles: true,
     absolute: true,
     ignore: testPathIgnorePatterns,
